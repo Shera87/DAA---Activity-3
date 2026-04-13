@@ -1,0 +1,23 @@
+from collections import deque
+class Solution(object):
+    def canFinish(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: bool
+        """
+        adj = [[] for _ in range(numCourses)]
+        indegree = [0] * numCourses
+        for dest, src in prerequisites:
+            adj[src].append(dest)
+            indegree[dest] += 1
+        queue = deque([i for i in range(numCourses) if indegree[i] == 0])
+        visited_count = 0
+        while queue:
+            course = queue.popleft()
+            visited_count += 1
+            for neighbor in adj[course]:
+                indegree[neighbor] -= 1
+                if indegree[neighbor] == 0:
+                    queue.append(neighbor)
+        return visited_count == numCourses
